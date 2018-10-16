@@ -1,4 +1,4 @@
-package com.dev.old.test;
+package com.dev.old;
 
 import com.dev.old.service.impl.UserServiceImpl4;
 import org.junit.Test;

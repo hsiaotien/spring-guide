@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean definitions here -->
+	<bean id="UserDao" class="com.dev.old.dao.impl.UserDaoImpl" ></bean>
+	
+	<!-- DI 依赖注入 -->
+	<bean id="OrderService" class="com.dev.ioc.service.impl.OrderServiceImpl" >
+		<property name="OrderDao" ref="orderdao" />
+	</bean>
+	<bean id="orderdao" class="com.dev.ioc.dao.impl.OrderDaoImpl" />
+
+
+	<!-- 静态工厂方式实例化bean -->
+	<bean id="orderdaoimpl" class="com.dev.ioc.factory.StaticFactory"
+          factory-method="getOrderDao" />
+	<!-- 实例工厂方式实例化bean -->
+	<bean id="insFactory" class="com.dev.ioc.factory.InsFactory" />
+	<bean id="orderdaoimplother" factory-bean="insFactory"
+          factory-method="getOrderDaoImpl"/>
+	
+	<!-- bean的作用域 -->
+	<bean id="singletonBean" class="com.dev.ioc.dao.impl.OrderDaoImpl"
+          scope="singleton"/>
+	<bean id="prototypeBean" class="com.dev.ioc.dao.impl.OrderDaoImpl"
+          scope="prototype"/>
+	
+	<!-- bean的生命周期  通过spring工厂，可以控制bean的生命周期。 -->
+	<bean id="lifecycle" class="com.dev.ioc.dao.impl.OrderDaoImpl"
+          init-method="init" destroy-method="destroy" />
+	
+	
+	<!-- bean的作用域,查看初始化时机 -->
+	<bean id="single" class="com.dev.ioc.scope.SingleBean" scope="singleton"/>
+	<bean id="proto" class="com.dev.ioc.scope.ProtoTypeBean" scope="prototype"/>
+	
+	<!-- bean属性的依赖注入   构造器 -->
+	<bean id = "car" class="com.dev.ioc.inject.Car">
+		<constructor-arg name="color" value="yellow"></constructor-arg>
+		<constructor-arg name="price" value="900"></constructor-arg>
+		<constructor-arg name="brand" value="byd"></constructor-arg>
+	</bean>
+	
+	<!-- bean属性的依赖注入    setter -->
+	<bean id="person" class="com.dev.ioc.inject.Person">
+		<property name="name" value="hsiao"></property>
+		<property name="age" value="18"></property>
+		<property name="car" ref="car"></property>
+	</bean>
+	
+	<!-- p空间 -->
+	<bean id="p-person" class="com.dev.ioc.inject.Person"
+          p:name="tien" p:age="18" p:car-ref="car"></bean>
+	
+	<!-- spEL表达式 -->
+	<bean id="spEL-person" class="com.dev.ioc.inject.Person"
+          p:name="#{person.name.toUpperCase()}" p:age="#{2+18}" p:car="#{car}"></bean>
+	
+</beans>
