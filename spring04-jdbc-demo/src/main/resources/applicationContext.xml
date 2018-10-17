@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"> 
+        
+        <!-- 开启注解扫描 -->
+        <context:component-scan base-package="com.dev.trans"/>
+        
+        <!-- ioc-pojo -->
+        <bean id="transService" class="com.dev.trans.TransServiceImpl">
+        	<property name="transDao" ref="transDao"></property>
+        </bean>
+        <bean id="transDao" class="com.dev.trans.TransDaoImpl">
+        	<property name="dataSource" ref="dataSource"/>
+        </bean>
+        
+        <!-- 数据源,及jdbctemplate配置 -->
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        	<property name="driverClass" value="${jdbc.driverClass}"/>
+        	<property name="jdbcUrl" value="${jdbc.jdbcUrl}"/>
+        	<property name="user" value="${jdbc.user}"/>
+        	<property name="password" value="${jdbc.password}"/>
+        </bean>
+        <context:property-placeholder location="classpath:db.properties"/>
+        
+        <!-- 第一步：定义具体的平台事务管理器（DataSource事务管理器） -->
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        	<property name="dataSource" ref="dataSource" />
+        </bean>
+         <!-- 第二步：定义通知，通知中要处理的就是事务 -->
+         <!-- 配置Advice通知：
+			Spring为简化事务的配置，提供了<tx:advice>来配置事务管理，也可以理解为该标签是spring为你实现好了的事务的通知增强方案。
+          -->
+         <tx:advice id="txAdvice" transaction-manager="transactionManager">
+         	<!-- 配置事务的属性定义 -->
+         	<tx:attributes>
+         		<!-- 配置具体的方法的事务属性
+			isolation//事务的隔离级别，默认是按数据库的隔离级别来
+			propagation//事务的传播行为，默认是同一个事务
+			timeout="-1":事务的超时时间，默认值使用数据库的超时时间。
+			read-only="false":事务是否只读，默认可读写。
+			rollback-for:遇到哪些异常就回滚，其他的都不回滚
+			no-rollback-for：遇到哪些异常不回滚，其他的都回滚。和上面互斥的
+         		 -->
+         		 <tx:method name="trans" isolation="DEFAULT" propagation="REQUIRED" timeout="-1" read-only="false"/>
+         		 <!-- 支持通配符
+				要求service中 方法名字必须符合下面的规则
+			 -->
+				<tx:method name="save*"/>
+				<tx:method name="update*"/>
+				<tx:method name="delete*"/>
+				<tx:method name="find*" read-only="true"/>
+         		 
+         	</tx:attributes>
+         </tx:advice>
+         
+         <!-- 第三步：配置切入点，让通知关联切入点，即事务控制业务层的方法 -->
+         <aop:config >
+         	 <aop:advisor advice-ref="txAdvice" pointcut="bean(*Service)"/>
+         </aop:config>
+
+</beans>
