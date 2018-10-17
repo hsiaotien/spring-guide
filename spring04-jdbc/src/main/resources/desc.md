@@ -1,0 +1,2 @@
+jdbcTemplate的使用示例。
+理解jdbcTemplate如何交给spring管理
