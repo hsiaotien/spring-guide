@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 开启注解 ,识别注解 -->
+	<context:annotation-config />
+	
+	<!-- 包扫描,专门为component注解,开启注解功能  这里没有这个注解,可以不用 
+	<context:component-scan base-package="com.dev.xmlandannotation" />  -->
+	
+	<bean name="productService" class="com.dev.xmlandannotation.ProductService"></bean>
+	<bean id="product" class="com.dev.xmlandannotation.ProductDao"></bean>
+</beans>
