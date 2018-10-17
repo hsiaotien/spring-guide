@@ -1,4 +1,4 @@
-package com.dev.springandweb;
+package com.dev.springandtest;
 
 import com.dev.web.HelloService;
 import org.junit.Test;

@@ -6,8 +6,8 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- 传统的依赖注入方式 -->
-	<!-- <bean id="consumerD" class="cn.spring.annotation.ConsumerDao"/> <bean 
-		id="consumerService" class="cn.spring.annotation.ConsumerService"> <property 
+	<!-- <bean id="consumerD" class="com.dev.annotation.ConsumerDao"/> <bean
+		id="consumerService" class="com.dev.annotation.ConsumerService"> <property
 		name="consumerDao" ref="consumerD"></property> </bean> -->
 		
 	<!-- 开启spring的注解功能 ：让注解有效了，识别注解 -->
@@ -15,7 +15,7 @@
 	
 	<!-- 配置注解扫描 context:component-scan:****专门扫描含有@Component注解的类，*******
 	
-		自动将其作为bean base-package：要扫描包的路径,包含子包,cn.spring.annotation表示子包下的所有类定义注解都有效 
+		自动将其作为bean base-package：要扫描包的路径,包含子包,com.dev.annotation表示子包下的所有类定义注解都有效
 		注解扫描配置的时候，会自动开启注解功能 -->
 	<context:component-scan base-package="com.dev.annotation" />
 </beans>
